@@ -3,39 +3,56 @@
 @section('title', 'User List')
 
 @section('content')
-<div class="container">
-    <h1>User List</h1>
-    <a href="{{ route('users.create') }}" class="btn btn-primary mb-3">Create New User</a>
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">User List</h1>
+        <a href="{{ route('users.create') }}" class="btn btn-primary btn-lg">Create New User</a>
+    </div>
     @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
     @endif
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($users as $user)
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-primary">
                 <tr>
-                    <td>{{ $user->id }}</td>
-                    <td>{{ $user->name }}</td>
-                    <td>{{ $user->email }}</td>
-                    <td>
-                        <a href="{{ route('users.show', $user) }}" class="btn btn-info btn-sm">View</a>
-                        <a href="{{ route('users.edit', $user) }}" class="btn btn-warning btn-sm">Edit</a>
-                        <form action="{{ route('users.destroy', $user) }}" method="POST" style="display:inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</button>
-                        </form>
-                    </td>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th class="text-center">Actions</th>
                 </tr>
-            @endforeach
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @forelse($users as $user)
+                    <tr>
+                        <td>{{ $user->id }}</td>
+                        <td>{{ $user->name }}</td>
+                        <td>{{ $user->email }}</td>
+                        <td class="text-center">
+                            <a href="{{ route('users.show', $user) }}" class="btn btn-info btn-sm me-1">
+                                <i class="bi bi-eye"></i> View
+                            </a>
+                            <a href="{{ route('users.edit', $user) }}" class="btn btn-warning btn-sm me-1">
+                                <i class="bi bi-pencil"></i> Edit
+                            </a>
+                            <form action="{{ route('users.destroy', $user) }}" method="POST" class="d-inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this user?')">
+                                    <i class="bi bi-trash"></i> Delete
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="4" class="text-center text-muted">No users found.</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
 </div>
 @endsection
